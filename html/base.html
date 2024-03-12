@@ -39,6 +39,12 @@
 <p>Problems, questions, suggestions? <a href="mailto:{{ cfg_contactEmail }}">email {{ cfg_contactName }}</a>.</p>
     {% endif %}
 
+    {# If cfg_contactSlackID exists and is not "None" then display it #}
+    {% if cfg_contactSlackTeamID is defined and cfg_contactSlackTeamID != None and cfg_contactSlackTeamID != "None" and 
+          cfg_contactSlackMemberID is defined and cfg_contactSlackMemberID != None and cfg_contactSlackMemberID != "None" %}
+<p>Problems, questions, suggestions? <a href="slack://user?team={{ cfg_contactSlackTeamID }}&id={{ cfg_contactSlackMemberID }}">slack {{ cfg_contactName }}</a>.</p>
+    {% endif %}
+
     {# If cfg_customDocs exists and is not "None" then display it #}
     {% if cfg_customDocs is defined and cfg_customDocs != None and cfg_customDocs != "None" %}
 <div>

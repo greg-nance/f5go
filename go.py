@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """This is the Go Redirector. It uses short mnemonics as redirects to otherwise
@@ -46,6 +46,8 @@ except:
 cfg_sslCertificate = config.get('goconfig', 'cfg_sslCertificate')
 cfg_sslPrivateKey = config.get('goconfig', 'cfg_sslPrivateKey')
 cfg_contactEmail = config.get('goconfig', 'cfg_contactEmail')
+cfg_contactSlackTeamID = config.get('goconfig', 'cfg_contactSlackTeamID')
+cfg_contactSlackMemberID = config.get('goconfig', 'cfg_contactSlackMemberID')
 cfg_contactName = config.get('goconfig', 'cfg_contactName')
 cfg_customDocs = config.get('goconfig', 'cfg_customDocs')
 
@@ -166,6 +168,10 @@ def sanitary(s):
 
 def byClicks(links):
     return sorted(links, key=lambda L: (-L.recentClicks, -L.totalClicks))
+
+
+def byTitle(links):
+    return sorted(links, key=lambda L: L.title.lower())
 
 
 def getCurrentEditableUrl():
@@ -403,7 +409,7 @@ class ListOfLinks(Link):
     def __init__(self, linkid=0, name="", redirect="freshest"):
         Link.__init__(self, linkid)
         self.name = name
-        self._url = redirect  # list | freshest | top | random
+        self._url = redirect  # list | listbytitle | freshest | top | random
         self.links = []
 
     def __repr__(self):
@@ -435,6 +441,12 @@ class ListOfLinks(Link):
     def getRecentLinks(self):
         return self.links
 
+    def getListOfLinks(self):
+        if self._url == "listpop":
+            return byClicks(self.links)
+        else:
+            return byTitle(self.links)
+
     def getPopularLinks(self):
         return byClicks(self.links)
 
@@ -450,7 +462,7 @@ class ListOfLinks(Link):
         return recent, popular
 
     def getDefaultLink(self):
-        if not self._url or self._url == "list":
+        if not self._url or self._url == "list" or self._url == "listpop":
             return None
         elif self._url == "top":
             return self.getPopularLinks()[0]
@@ -462,7 +474,7 @@ class ListOfLinks(Link):
             return g_db.getLink(self._url)
 
     def url(self, keyword=None, args=None):
-        if not self._url or self._url == "list":
+        if not self._url or self._url == "list" or self._url == "listpop":
             return None
         elif self._url == "top":
             return self.getPopularLinks()[0].url(keyword, args)
