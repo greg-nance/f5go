@@ -213,7 +213,7 @@ def getSSOUsername(redirect=True):
         raise cherrypy.HTTPRedirect(cfg_urlSSO + urllib.parse.quote(redirect, safe=":/"))
 
     sso = urllib.parse.unquote(cherrypy.request.cookie["issosession"].value)
-    session = list(map(base64.b64decode, string.split(sso, "-")))
+    session = list(map(base64.b64decode, sso.split("-")))
     return session[0]
 
 
@@ -750,7 +750,7 @@ class LinkDatabase:
             for l in f.readlines():
                 if not l.strip(): continue
                 print(l.strip())
-                a, b = string.split(l, " ", 1)
+                a, b = l.split(" ", 1)
                 if a == "regex":
                     R = RegexList(self.nextlinkid())
                     R._import(b)
@@ -759,7 +759,7 @@ class LinkDatabase:
                     L._import(b)
                     self._addLink(L)
                 elif a == "list":
-                    listname, rest = string.split(b, " ", 1)
+                    listname, rest = b.split(" ", 1)
                     if listname in self.lists:
                         LL = self.lists[listname]
                     else:
