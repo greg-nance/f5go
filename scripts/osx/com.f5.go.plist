@@ -10,7 +10,7 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/opt/homebrew/bin/python3</string>
+    <string>/Users/nance/src/f5go/scripts/osx/venv/bin/python</string>
     <string>go.py</string>
   </array>
   
